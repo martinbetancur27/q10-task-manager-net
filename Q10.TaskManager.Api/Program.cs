@@ -1,6 +1,14 @@
 using Q10.TaskManager.Api.Configurations;
+using Q10.TaskManager.Infrastructure.Interfaces;
+using Q10.TaskManager.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddScoped<IConfig, SettingsRepository>();
+
+builder.Services.AddServices();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

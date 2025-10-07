@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Q10.TaskManager.Infrastructure.Interfaces;
+using Q10.TaskManager.Infrastructure.Repositories;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,8 +10,11 @@ namespace Q10.TaskManager.Api.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
-        public TasksController()
+        public ICacheRepository CacheRepository { get; set; }
+
+        public TasksController(ICacheRepository cacheRepository)
         {
+            CacheRepository = cacheRepository;
         }
 
         // GET: api/<TasksController>
@@ -30,6 +35,7 @@ namespace Q10.TaskManager.Api.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
+            CacheRepository.Set($"task_{Guid.NewGuid()}", value);
         }
 
         // PUT api/<TasksController>/5
