@@ -5,7 +5,7 @@ services:
     image: q10taskmanagerapi
     build:
       context: .
-      dockerfile: Q10.TaskManager.Api/Dockerfile
+      dockerfile: api.Dockerfile
       args:
         - configuration=Debug
     ports:

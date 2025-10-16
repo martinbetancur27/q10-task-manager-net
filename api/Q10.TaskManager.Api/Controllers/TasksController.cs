@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Q10.TaskManager.Infrastructure.Data;
+using Q10.TaskManager.Infrastructure.Entities;
 using Q10.TaskManager.Infrastructure.Interfaces;
 using Q10.TaskManager.Infrastructure.Repositories;
 
@@ -10,11 +13,15 @@ namespace Q10.TaskManager.Api.Controllers
     [ApiController]
     public class TasksController : ControllerBase
     {
+        public IConfig Configuration { get; set; }
         public ICacheRepository CacheRepository { get; set; }
+        public PostgreSQLContext Context { get; set; }
 
-        public TasksController(ICacheRepository cacheRepository)
+        public TasksController(IConfig configuration, ICacheRepository cacheRepository, PostgreSQLContext postgreSQLContext)
         {
+            Configuration = configuration;
             CacheRepository = cacheRepository;
+            Context = postgreSQLContext;
         }
 
         // GET: api/<TasksController>
@@ -33,9 +40,19 @@ namespace Q10.TaskManager.Api.Controllers
 
         // POST api/<TasksController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] string value)
         {
-            CacheRepository.Set($"task_{Guid.NewGuid()}", value);
+            CacheRepository.Set($"task_{Guid.NewGuid}", value);
+            await Context.TaskItems.AddAsync(new
+                TaskItem
+            {
+                Title = value,
+                Description = "Descripción de " + value
+            });
+            await Context.SaveChangesAsync();
+
+            return Ok();
+            //CacheRepository.Set($"task_{Guid.NewGuid}", value);
         }
 
         // PUT api/<TasksController>/5

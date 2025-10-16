@@ -11,11 +11,15 @@ builder.Services.AddServices();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddControllers();
+builder.Services.AddDatabaseConfiguration();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerConfiguration();
 
 var app = builder.Build();
+
+await builder.Services.DatabaseCreatedAsync();
 
 if (app.Environment.IsDevelopment())
 {
