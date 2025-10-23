@@ -16,6 +16,9 @@ namespace Q10.TaskManager.Api.Configurations
 
             #endregion Repositories
 
+            // RabbitMQ Services
+            services.AddSingleton<IRabbitMQRepository, RabbitMQRepository>();
+
             #region Services
 
             services.AddScoped<ITaskService, TaskService>();
