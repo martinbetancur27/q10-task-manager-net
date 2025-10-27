@@ -1,10 +1,5 @@
 ﻿using Q10.TaskManager.Infrastructure.DTOs;
 using Q10.TaskManager.Infrastructure.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Q10.TaskManager.Infrastructure.Services
 {
@@ -36,6 +31,7 @@ namespace Q10.TaskManager.Infrastructure.Services
                 {
                     var taskItem = new Entities.TaskItem
                     {
+                        Id = taskRequest.Id,
                         Title = taskRequest.Title,
                         Description = taskRequest.Description
                     };
@@ -60,14 +56,6 @@ namespace Q10.TaskManager.Infrastructure.Services
                     });
                 }
             }
-
-            var result = new TaskBulkResult
-            {
-                CommandId = command.Id,
-                Results = results
-            };
-
-            await _rabbitMQRepository.PublishAsync(result, "task-bulk-results-queue");
         }
     }
 }

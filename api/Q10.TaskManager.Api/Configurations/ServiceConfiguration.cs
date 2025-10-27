@@ -1,4 +1,5 @@
-﻿using Q10.TaskManager.Infrastructure.Interfaces;
+﻿using Q10.TaskManager.Api.Workers;
+using Q10.TaskManager.Infrastructure.Interfaces;
 using Q10.TaskManager.Infrastructure.Repositories;
 using Q10.TaskManager.Infrastructure.Services;
 
@@ -18,6 +19,11 @@ namespace Q10.TaskManager.Api.Configurations
 
             // RabbitMQ Services
             services.AddSingleton<IRabbitMQRepository, RabbitMQRepository>();
+            services.AddHostedService<ProcessBulkWorker>();
+
+            services.AddScoped<ITaskBulkQueryService, TaskBulkQueryService>();
+            services.AddScoped<ITaskBulkCommandService, TaskBulkCommandService>(); 
+            services.AddScoped<IProcessBulkService, ProcessBulkService>();
 
             #region Services
 

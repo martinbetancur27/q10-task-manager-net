@@ -9,6 +9,7 @@ namespace Q10.TaskManager.Infrastructure.Interfaces
 {
     public interface ITaskBulkQueryService
     {
-        Task<List<TaskBulkResponse>> GetBulkTaskResultsAsync(string commandId);
+        Task<List<TaskBulkResponse>> GetTaskByIdAsync(string commandId);
+
     }
 }

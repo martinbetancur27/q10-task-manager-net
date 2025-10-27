@@ -17,7 +17,7 @@ namespace Q10.TaskManager.Infrastructure.Services
             _taskRepository = taskRepository;
         }
 
-        public async Task<List<TaskBulkResponse>> GetBulkTaskResultsAsync(string commandId)
+        public async Task<List<TaskBulkResponse>> GetTaskByIdAsync(string commandId)
         {
             // En una implementación real, esto consultaría una tabla de resultados
             // Por simplicidad, retornamos una lista vacía
