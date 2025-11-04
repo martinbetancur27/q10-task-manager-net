@@ -16,15 +16,20 @@ builder.Services.AddDatabaseConfiguration();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHealthChecks();
 builder.Services.AddSwaggerConfiguration();
+// Add Authentication & Authorization
+builder.Services.AddAuthConfiguration(builder.Configuration);
 
 var app = builder.Build();
 
 await builder.Services.DatabaseCreatedAsync();
+app.UseSwaggerConfiguration(app.Environment);
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwaggerConfiguration();
-}
+// Use CORS
+app.UseCors("AllowAngularApp");
+
+// Use Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapHealthChecks("/health");
 

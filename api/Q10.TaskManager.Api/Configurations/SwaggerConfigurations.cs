@@ -3,43 +3,78 @@ using System.Reflection;
 
 namespace Q10.TaskManager.Api.Configurations
 {
-    public static class SwaggerConfigurations
+    public static class SwaggerConfiguration
     {
         public static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
+                options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Q10 Task Manager API",
-                    Version = "v1",
-                    Description = "API para gestión de tareas del curso Q10. Permite crear, leer, actualizar y eliminar tareas de manera eficiente.",
+                    Version = "v1.0.0",
+                    Title = "TaskManager API",
+                    Description = "API para la gestión de tareas y configuraciones del sistema TaskManager. " +
+                                "Proporciona endpoints para la administración de configuraciones del entorno " +
+                                "y monitoreo del estado de la aplicación.",
                     Contact = new OpenApiContact
                     {
-                        Name = "Q10 Development Team",
-                        Email = "dev@q10.com"
+                        Name = "Cedesistemas",
+                        Email = "info@cedesistemas.com"
                     }
                 });
 
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
                 if (File.Exists(xmlPath))
                 {
-                    c.IncludeXmlComments(xmlPath);
+                    options.IncludeXmlComments(xmlPath);
                 }
+
+                //options.EnableAnnotations();
+
+                // Configuración para JWT Bearer Token
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header usando el esquema Bearer. Ejemplo: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             return services;
         }
 
-        public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSwaggerConfiguration(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            if (env.IsDevelopment())
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Q10 Task Manager API v1");
-                c.RoutePrefix = "swagger";
-            });
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "TaskManager API v1");
+                    options.RoutePrefix = "swagger";
+                    options.DocumentTitle = "TaskManager API Documentation";
+                    options.DisplayRequestDuration();
+                });
+            }
 
             return app;
         }

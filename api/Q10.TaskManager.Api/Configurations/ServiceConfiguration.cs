@@ -28,6 +28,8 @@ namespace Q10.TaskManager.Api.Configurations
             #region Services
 
             services.AddScoped<ITaskService, TaskService>();
+            services.AddScoped<IAuthService, AuthService>();
+
 
             #endregion Services
 
